@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:sitecore-sapi="http://www.mulesoft.org/schema/mule/sitecore-sapi" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/sitecore-sapi http://www.mulesoft.org/schema/mule/sitecore-sapi/current/mule-sitecore-sapi.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="435d4420-a64f-4f86-94ae-f26750d99ea7" />
+	<sitecore-sapi:config name="Sitecore_sapi_Config" doc:name="Sitecore-sapi Config" doc:id="253fdbae-f2cd-4fd5-a6ef-d98a6e62555a" property_username="shani" property_password="shani" property_host="localhost" property_port="8082" property_basePath="/api/" property_protocol="HTTP" property_responseTimeout="300000"/>
+	<flow name="url-update-papiFlow" doc:id="eba26118-ecf2-419f-bbc2-d4f03614c070" >
+		<ee:transform doc:name="Transform Message" doc:id="b4c0cb8d-2f3a-4f41-9c30-7c18f11bb419" >
+			<ee:message />
+			<ee:variables >
+				<ee:set-variable variableName="vmPayload" ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<http:request method="GET" doc:name="Request" doc:id="bbd8584f-fd6f-41d2-817f-0427616dfe8e" config-ref="HTTP_Request_configuration" url="http://sitecore-integration.us-e2.cloudhub.io/entities/575365" responseTimeout="300000" />
+		<ee:transform doc:name="Transform Message" doc:id="338a5c51-cffa-4242-b3c3-a23e93d3da53" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="reqresponsePayload" ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="3d2d7421-58fa-4198-8044-8326bcb536d3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload update {
+    case s at .properties.OriginalAssetURL -> vars.vmPayload.object_keys.OriginalAssetUrl
+     case s at .properties.ThumbnailURL -> vars.vmPayload.object_keys.ThumbnailURL
+      case s at .properties.Thumbnail1URL -> vars.vmPayload.object_keys.Thumbnail1URL
+      case s at .properties.BigThumbnailURL -> vars.vmPayload.object_keys.BigThumbnail1URL
+       case s at .properties.PreviewURL -> vars.vmPayload.object_keys.PreviewURL
+        case s at .properties.Desktop1URL -> vars.vmPayload.object_keys.Desktop1URL
+         case s at .properties.Desktop2URL -> vars.vmPayload.object_keys.Desktop2URL
+          case s at .properties.Mobile1URL -> vars.vmPayload.object_keys.Mobile1URL
+           case s at .properties.Mobile2URL -> vars.vmPayload.object_keys.Mobile2URL
+            case s at .properties.PSDHighResURL -> vars.vmPayload.object_keys.PSDHighResURL
+            case s at .properties.PSDLowResURL -> vars.vmPayload.object_keys.PSDLowResURL
+            }]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="12e0977d-270a-40b6-a825-6f78534ba6b7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<sitecore-sapi:update-link doc:name="Update Link" doc:id="d9e72ba2-c67e-49c9-a1a4-d9081b593a7a" x-auth-token="DCH" content-type="application/json" x-correlation-id="DCH" config-ref="Sitecore_sapi_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="b8f1c6d2-04a4-4b36-a552-e92d77972d87" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
