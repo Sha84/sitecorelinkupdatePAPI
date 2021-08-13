@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:sitecore-sapi="http://www.mulesoft.org/schema/mule/sitecore-sapi" xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:sitecore-sapi="http://www.mulesoft.org/schema/mule/sitecore-sapi"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/sitecore-sapi http://www.mulesoft.org/schema/mule/sitecore-sapi/current/mule-sitecore-sapi.xsd">
+http://www.mulesoft.org/schema/mule/sitecore-sapi http://www.mulesoft.org/schema/mule/sitecore-sapi/current/mule-sitecore-sapi.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
 	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="435d4420-a64f-4f86-94ae-f26750d99ea7" />
 	<sitecore-sapi:config name="Sitecore_sapi_Config" doc:name="Sitecore-sapi Config" doc:id="253fdbae-f2cd-4fd5-a6ef-d98a6e62555a" property_username="shani" property_password="shani" property_host="localhost" property_port="8082" property_basePath="/api/" property_protocol="HTTP" property_responseTimeout="300000"/>
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="5c500e41-713d-4cf7-949f-34ec4bbab087" >
+		<jms:active-mq-connection username="admin" password="admin" >
+			<jms:factory-configuration brokerUrl="tcp://localhost:61616" />
+		</jms:active-mq-connection>
+	</jms:config>
 	<flow name="url-update-papiFlow" doc:id="eba26118-ecf2-419f-bbc2-d4f03614c070" >
+		<jms:listener doc:name="On New Message" doc:id="24af2888-68a1-4a07-a8b8-a4993d21c7a1" config-ref="JMS_Config" destination="Q.SC.LAMBDA"/>
 		<ee:transform doc:name="Transform Message" doc:id="b4c0cb8d-2f3a-4f41-9c30-7c18f11bb419" >
 			<ee:message />
 			<ee:variables >
