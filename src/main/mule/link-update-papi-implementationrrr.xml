@@ -15,7 +15,6 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
 		</jms:active-mq-connection>
 	</jms:config>
 	<flow name="url-update-papiFlow" doc:id="eba26118-ecf2-419f-bbc2-d4f03614c070" >
-		<jms:listener doc:name="On New Message" doc:id="24af2888-68a1-4a07-a8b8-a4993d21c7a1" config-ref="JMS_Config" destination="Q.SC.LAMBDA"/>
 		<ee:transform doc:name="Transform Message" doc:id="b4c0cb8d-2f3a-4f41-9c30-7c18f11bb419" >
 			<ee:message />
 			<ee:variables >
@@ -77,5 +76,10 @@ output application/json
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+	</flow>
+	<flow name="link-update-papi-implementationFlow" doc:id="30324f5c-a8ba-4fa3-b862-1872fbfab4b2" >
+		<jms:listener doc:name="On New Message" doc:id="24af2888-68a1-4a07-a8b8-a4993d21c7a1" config-ref="JMS_Config" destination="Q.SC.LAMBDA" />
+		<flow-ref doc:name="Flow Reference" doc:id="b7407187-c483-45a3-8ea0-51d6305e1c92" name="url-update-papiFlow"/>
+		<logger level="INFO" doc:name="Logger" doc:id="583fc74b-0748-43e4-bee3-f35c9d4d4f83" message="#[payload]"/>
 	</flow>
 </mule>

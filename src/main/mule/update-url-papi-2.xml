@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd ">
-    <http:listener-config name="update-url-papi-httpListenerConfig">
+    <http:listener-config name="update-url-papi-2-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="8085" />
     </http:listener-config>
-    <apikit:config name="update-url-papi-config" api="resource::600a1e2b-9eca-403f-b97d-1178aa13d11a:update-url-papi:1.0.2:raml:zip:update-url-papi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
-    <flow name="update-url-papi-main">
-        <http:listener config-ref="update-url-papi-httpListenerConfig" path="/api/*">
+    <apikit:config name="update-url-papi-2-config" api="resource::694704ae-436b-41ec-be10-7e4873bd5821:update-url-papi:1.0.0:raml:zip:update-url-papi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <flow name="update-url-papi-2-main">
+        <http:listener config-ref="update-url-papi-2-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:response>
@@ -14,7 +14,7 @@
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:router config-ref="update-url-papi-config" />
+        <apikit:router config-ref="update-url-papi-2-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:BAD_REQUEST">
                 <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
@@ -96,8 +96,8 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="update-url-papi-console">
-        <http:listener config-ref="update-url-papi-httpListenerConfig" path="/console/*">
+    <flow name="update-url-papi-2-console">
+        <http:listener config-ref="update-url-papi-2-httpListenerConfig" path="/console/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:response>
@@ -106,7 +106,7 @@ output application/json
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:console config-ref="update-url-papi-config" />
+        <apikit:console config-ref="update-url-papi-2-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:NOT_FOUND">
                 <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
@@ -123,7 +123,7 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="post:\uAssets:application\json:update-url-papi-config">
-		<flow-ref doc:name="Flow Reference" doc:id="838d0a83-50d5-4a74-9fb7-5b378dfa1d2f" name="url-update-papiFlow"/>
+    <flow name="post:\uAssets:application\json:update-url-papi-2-config">
+		<flow-ref doc:name="Flow Reference" doc:id="aea0efb6-57e6-47f0-8d78-33e71bfc7c0b" name="url-update-papiFlow"/>
     </flow>
 </mule>
